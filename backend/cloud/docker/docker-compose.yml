@@ -1,0 +1,98 @@
+# version: "3.8"
+
+services:
+  db_user:
+    image: mysql:latest
+    container_name: db-user-container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: link
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: user_database
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_user_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      retries: 3
+      start_period: 30s
+      timeout: 10s
+    restart: always
+    networks:
+      - db_network   
+
+  db_cart:
+    image: postgres:latest
+    container_name: db-cart-container
+    environment:
+      POSTGRES_USER: link
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: cart_database
+    ports:
+      - "5433:5432"
+    volumes:
+      - db_cart_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "link"]
+      interval: 30s
+      retries: 3
+      start_period: 30s
+      timeout: 10s
+    restart: always
+    networks:
+      - db_network   
+
+  db_wishlist:
+    image: postgres:latest
+    container_name: db-wishlist-container
+    environment:
+      POSTGRES_USER: link
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: wishlist_database
+    ports:
+      - "5434:5432"
+    volumes:
+      - db_wishlist_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "link"]
+      interval: 30s
+      retries: 3
+      start_period: 30s
+      timeout: 10s
+    restart: always
+    networks:
+      - db_network   
+
+  db_product:
+    image: mongo:latest
+    container_name: db-product-container
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: product_database
+    ports:
+      - "27018:27017"
+    volumes:
+      - db_product_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      retries: 3
+      start_period: 30s
+      timeout: 10s
+    restart: always
+    networks:
+      - db_network   
+
+volumes:
+  db_user_data:
+  db_cart_data:
+  db_wishlist_data:
+  db_product_data:
+
+networks:
+  db_network:  
+    driver: bridge
+  default:   
