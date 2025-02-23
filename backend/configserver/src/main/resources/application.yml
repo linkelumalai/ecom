@@ -12,7 +12,7 @@ spring:
         #   search-locations:
         #     - "classpath:/config"
         git:
-          uri: <your-git-repository-uri>
+          uri: https://github.com/linkelumalai/ecomconfig.git
           default-label: main
           timeout: 5
           clone-on-start: true
